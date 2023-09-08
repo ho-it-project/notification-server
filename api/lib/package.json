@@ -1,0 +1,18 @@
+{
+  "name": "hoit-notifivation-api",
+  "version": "0.0.1",
+  "description": "API for hoit-notifivation",
+  "main": "index.js",
+  "typings": "index.d.ts",
+  "repository": {
+    "type": "git"
+  },
+  "author": "AUTHOR",
+  "license": "MIT",
+  "bugs": {},
+  "homepage": "#readme",
+  "dependencies": {
+    "@nestia/fetcher": "^1.0.1",
+    "typia": "^3.6.8"
+  }
+}
