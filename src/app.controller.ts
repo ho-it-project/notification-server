@@ -8,4 +8,9 @@ export class AppController {
   health() {
     return 'OK';
   }
+
+  @Get('/')
+  getHello(): string {
+    return 'Hello World!';
+  }
 }

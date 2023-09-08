@@ -136,3 +136,5 @@ packages/**/*.ts
 packages/**/*.js
 
 src/api
+
+api
