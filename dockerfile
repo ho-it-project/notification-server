@@ -25,6 +25,7 @@ RUN pnpm install --frozen-lockfile
 RUN npx ts-patch install
 RUN pnpm run prebuild
 RUN pnpm run build
+RUN mkdir -p /app/packages/api
 RUN npx nestia swagger
 RUN pnpm prune --prod
 USER node
@@ -41,7 +42,7 @@ COPY --chown=node:node --from=build /app/.env /app/.env
 COPY --chown=node:node --from=build /app/packages /app/packages
 COPY --chown=node:node --from=build /app/package.json /app/package.json
 RUN mkdir -p /app/logs && chown node:node /app/logs
-RUN mkdir -p /app/packages/api
+
 
 USER node
 
