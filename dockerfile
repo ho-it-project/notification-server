@@ -41,6 +41,7 @@ COPY --chown=node:node --from=build /app/.env /app/.env
 COPY --chown=node:node --from=build /app/packages /app/packages
 COPY --chown=node:node --from=build /app/package.json /app/package.json
 RUN mkdir -p /app/logs && chown node:node /app/logs
+RUN mkdir -p /app/packages/api
 
 USER node
 
