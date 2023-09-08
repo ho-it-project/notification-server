@@ -49,7 +49,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   @SubscribeMessage('er.message.all')
   handleMessage(client: Socket, payload: { name: string; text: string }): void {
     client;
-    this.server.send('msgToClient', payload);
+    this.server.emit('er.message.all', payload);
   }
 
   @SubscribeMessage('er.message.er')
