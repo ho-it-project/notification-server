@@ -47,9 +47,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   }
 
   @SubscribeMessage('er.message.all')
-  handleMessage(client: Socket, payload: { name: string; text: string }): void {
-    client;
-    this.server.emit('er.message.all', payload);
+  handleMessage(client: Socket, payload: { text: string }): void {
+    const { er_id, hospital_name } = client.handshake.query as unknown as ChatGatewayClinetQuery;
+    const { text } = payload;
+    const erInfo = {
+      hospital_name,
+      er_id,
+    };
+    this.server.emit('er.message.all', { erInfo, text });
   }
 
   @SubscribeMessage('er.message.er')
