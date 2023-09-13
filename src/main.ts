@@ -13,9 +13,9 @@ async function bootstrap() {
   // app.useWebSocketAdapter(io);
   app.setGlobalPrefix('api');
 
-  // app.enableCors({
-  //   origin: '*',
-  // });
+  app.enableCors({
+    origin: '*',
+  });
 
   await app.listen(port);
 }
