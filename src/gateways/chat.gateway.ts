@@ -19,7 +19,7 @@ interface ChatGatewayClinetPayload {
   text: string;
 }
 
-@WebSocketGateway({ namespace: 'chat' }) // namespace는 optional 입니다!
+@WebSocketGateway({ namespace: 'chat', cors: { origin: '*' } }) // namespace는 optional 입니다!
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
   private static readonly logger = new Logger(ChatGateway.name);
   private connectedClients: Map<string, string> = new Map();

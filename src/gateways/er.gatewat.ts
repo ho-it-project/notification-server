@@ -13,7 +13,12 @@ interface ClinetQuery {
   hospital_name: string;
 }
 
-@WebSocketGateway({ namespace: 'er' }) // namespace는 optional 입니다!
+@WebSocketGateway({
+  namespace: 'er',
+  cors: {
+    origin: '*',
+  },
+}) // namespace는 optional 입니다!
 export class ErGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
   private static readonly logger = new Logger(ErGateway.name);
   private connectedClients: Map<string, string> = new Map();
