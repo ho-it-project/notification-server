@@ -4,17 +4,19 @@ WORKDIR /usr/src/app
 
 RUN npm install -g pnpm
 
-COPY package*.json pnpm-lock.yaml tsconfig.json ./
+COPY package*.json pnpm-lock.yaml tsconfig.json prisma ./
+COPY .env.test ./.env
 
 ENV NODE_ENV=TEST
 
 RUN pnpm install --frozen-lockfile
+RUN pnpm db:pull
+RUN pnpm db:generate
 RUN npx ts-patch install
 
 COPY ./ ./
 
 RUN pnpm run prebuild
 RUN pnpm run build
-
 
 

@@ -1,4 +1,5 @@
 import { LoggerMiddleware } from '@common/middlewares/logger.middleware';
+import { PrismaModule } from '@common/prisma/prisma.module';
 import { Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
@@ -16,6 +17,7 @@ import { ErModule } from './modules/er.module';
     //   brokers: ['localhost:9092', 'localhost:9093', 'localhost:9094'],
     //   groupId: 'hoit',
     // }),
+    PrismaModule,
     ChatModule,
     ErModule,
   ],

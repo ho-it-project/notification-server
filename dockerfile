@@ -28,6 +28,8 @@ RUN pnpm run build
 RUN mkdir -p /app/packages/api
 RUN npx nestia swagger
 RUN pnpm prune --prod
+RUN pnpm db:pull
+RUN pnpm db:generate
 USER node
 
 ######################

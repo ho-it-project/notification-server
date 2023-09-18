@@ -1,0 +1,22 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["notification"]
+}
+
+// Test schema
+model Notification {
+  id        String  @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  read      Boolean @default(false)
+  message   String
+  userId    String
+
+  @@schema("notification")
+}
