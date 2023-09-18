@@ -30,7 +30,10 @@
     "docker:build:dev": "docker build -t hoit/notification-server:dev -f ./dockerfile.dev .",
     "docker:dev": "docker run -p 8000:8000 hoit/notification-server:dev",
     "decker:build:local": "docker build -t hoit/notification-server:local -f ./dockerfile.local .",
-    "decker:local": "docker run -p 8000:8000 hoit/notification-server:local"
+    "decker:local": "docker run -p 8000:8000 hoit/notification-server:local",
+    "db:push": "npx prisma db push",
+    "db:generate": "npx prisma generate",
+    "db:pull": "npx prisma db pull"
   },
   "dependencies": {
     "@kafkajs/confluent-schema-registry": "^3.3.0",
