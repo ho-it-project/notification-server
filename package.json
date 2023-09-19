@@ -110,5 +110,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "lint-staged": {
+    "**/*.ts": "exlint --fix"
   }
 }
