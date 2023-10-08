@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 async function bootstrap() {
-  const port = process.env.PORT || 8000;
+  const port = process.env.PORT || 8001;
   const app = await NestFactory.create(AppModule, { logger: winstonLogger });
   const docs = require('../packages/api/swagger.json');
   docs.servers = [{ url: 'notification' }];
@@ -19,4 +19,6 @@ async function bootstrap() {
 
   await app.listen(port);
 }
-bootstrap();
+bootstrap().catch((err) => {
+  console.error(err);
+});

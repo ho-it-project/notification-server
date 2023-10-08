@@ -12,7 +12,7 @@ export interface KafkaPayload<T> {
   /**
    * @type string
    */
-  messageType: string; 
+  messageType: string;
 
   /**
    * @type string
@@ -35,7 +35,7 @@ export interface KafkaPayload<T> {
 
 export interface KafkaConsumerPayload<T> {
   key: string | null;
-  value: KafkaPayload<T>;
+  value: { body: KafkaPayload<T> };
 }
 export class KafkaConfig {
   public clientId: string;

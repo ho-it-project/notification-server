@@ -3,7 +3,7 @@ import { Consumer, EachMessagePayload, Kafka, LogEntry, Partitioners, Producer, 
 import { SUBSCRIBER_FIXED_FN_REF_MAP, SUBSCRIBER_FN_REF_MAP, SUBSCRIBER_OBJ_REF_MAP } from './kafka.decorator';
 import { KafkaConfig, KafkaPayload } from './kafka.message';
 
-const CONSUMER_FROM_BEGINNING = false;
+const CONSUMER_FROM_BEGINNING = true;
 
 @Injectable()
 export class KafkaService implements OnModuleInit, OnModuleDestroy {
@@ -16,6 +16,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   private readonly consumerSuffix = '-' + Math.floor(Math.random() * 100000);
 
   constructor(private kafkaConfig: KafkaConfig) {
+    console.log('kafkaConfig', this.kafkaConfig.brokers);
     this.kafka = new Kafka({
       clientId: this.kafkaConfig.clientId,
       brokers: this.kafkaConfig.brokers,
@@ -34,11 +35,11 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
     try {
       await this.connect();
 
-      this.subscribeToTopics(SUBSCRIBER_FN_REF_MAP, this.consumer, this.bindAllTopicToConsumer);
-      this.subscribeToTopics(SUBSCRIBER_FIXED_FN_REF_MAP, this.fixedConsumer, this.bindAllTopicToFixedConsumer);
+      await this.subscribeToTopics(SUBSCRIBER_FN_REF_MAP, this.consumer, this.bindAllTopicToConsumer);
+      await this.subscribeToTopics(SUBSCRIBER_FIXED_FN_REF_MAP, this.fixedConsumer, this.bindAllTopicToFixedConsumer);
 
-      this.runConsumer(this.fixedConsumer, SUBSCRIBER_FIXED_FN_REF_MAP);
-      this.runConsumer(this.consumer, SUBSCRIBER_FN_REF_MAP);
+      await this.runConsumer(this.fixedConsumer, SUBSCRIBER_FIXED_FN_REF_MAP);
+      await this.runConsumer(this.consumer, SUBSCRIBER_FN_REF_MAP);
     } catch (error) {
       this.logger.error('Failed to initialize Kafka', error);
       throw error;
@@ -46,7 +47,12 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   }
 
   async onModuleDestroy(): Promise<void> {
-    await this.disconnect();
+    try {
+      await this.disconnect();
+    } catch (error) {
+      this.logger.error('Failed to disconnect Kafka', error);
+      throw error;
+    }
   }
 
   async connect(): Promise<void> {
@@ -67,12 +73,12 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   }
 
   private async subscribeToTopics(
-    map: Map<string, Function>,
+    map: Map<string, (...args: any[]) => any>,
     consumer: Consumer,
-    bindFunction: Function,
+    bindFunction: (...args: any[]) => any,
   ): Promise<void> {
     for (const [topic, functionRef] of map.entries()) {
-      if (functionRef) {
+      if (!!functionRef) {
         await bindFunction.call(this, consumer, topic);
       }
     }
@@ -86,16 +92,21 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
     await consumer.subscribe({ topic, fromBeginning: CONSUMER_FROM_BEGINNING });
   }
 
-  private async runConsumer(consumer: Consumer, map: Map<string, Function>): Promise<void> {
+  private async runConsumer(consumer: Consumer, map: Map<string, (...args: any[]) => any>): Promise<void> {
     await consumer.run({
       eachMessage: async ({ topic, message }: EachMessagePayload) => {
         const functionRef = map.get(topic);
         if (functionRef) {
           const object = SUBSCRIBER_OBJ_REF_MAP.get(topic);
-          if (message.value !== null) {
-            await functionRef.apply(object, [
-              { key: message.key ? message.key.toString() : null, value: JSON.parse(message.value.toString()) },
-            ]);
+          try {
+            if (message.value !== null) {
+              await functionRef.apply(object, [
+                { key: message.key ? message.key.toString() : null, value: JSON.parse(message.value.toString()) },
+              ]);
+            }
+          } catch (error) {
+            // 예외 처리: 메시지 처리 중 오류 발생 시 로그 남기고 다음 메시지로 진행
+            this.logger.error(`Error processing message from topic ${topic}: ${error}`);
           }
         }
       },
