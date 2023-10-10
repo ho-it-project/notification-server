@@ -1,19 +1,4 @@
-export interface TestBody {
-  /**
-   * @type int
-   */
-  test_id: number;
-
-  /**
-   * @type string
-   */
-  test_name?: string;
-}
-
-export interface TestBody2 {
-  test: TestBody;
-}
-
+// 연습용 타입
 export interface ChangeErStatusDTO {
   /**
    * @type string
@@ -56,3 +41,7 @@ export type Status = 'ACTIVE' | 'INACTIVE' | 'DELETED';
 export type Severity = 'SEVERE' | 'MILD' | 'NONE' | 'UNKNOW';
 export type Gender = 'FEMALE' | 'MALE';
 export type RequestStatus = 'REQUESTED' | 'VIEWED' | 'ACCEPTED' | 'REJECTED' | 'CANCELED' | 'COMPLETED';
+
+export type KafkaPayload<T> = {
+  body: T;
+};

@@ -10,6 +10,7 @@ export class ErController {
 
   @TypedRoute.Put('/status')
   async changeErStatus(@TypedBody() body: ChangeErStatusDTO) {
+    console.log(this.erGateway);
     this.logger.debug(`change status`);
     this.erGateway.notifiyErChangedStatus(body);
   }
