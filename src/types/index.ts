@@ -41,7 +41,3 @@ export type Status = 'ACTIVE' | 'INACTIVE' | 'DELETED';
 export type Severity = 'SEVERE' | 'MILD' | 'NONE' | 'UNKNOW';
 export type Gender = 'FEMALE' | 'MALE';
 export type RequestStatus = 'REQUESTED' | 'VIEWED' | 'ACCEPTED' | 'REJECTED' | 'CANCELED' | 'COMPLETED';
-
-export type KafkaPayload<T> = {
-  body: T;
-};

@@ -8,7 +8,7 @@ export class ReqConsumer {
 
   @MessagePattern('ems.request.er')
   async handleEmsToErRequest(@Payload() payload: any) {
-    const { updated_at } = payload.body;
+    const { updated_at } = payload;
 
     // 메세지 시간이 5분 이내인지 확인
     const now = new Date();
@@ -18,6 +18,7 @@ export class ReqConsumer {
     if (diffMinutes > 5) {
       return;
     }
-    this.reqGateway.notifyEmsToErNewRequest(payload.body);
+    console.log(payload);
+    this.reqGateway.notifyEmsToErNewRequest(payload);
   }
 }

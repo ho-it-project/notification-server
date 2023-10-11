@@ -15,10 +15,6 @@ import { ReqModule } from './modules/req.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: '.env',
-    }),
     ClientsModule.register([
       {
         name: 'notification',
@@ -26,7 +22,7 @@ import { ReqModule } from './modules/req.module';
         options: {
           client: {
             clientId: `notification-${v4()}`,
-            brokers: [],
+            brokers: process.env.KAFKA_BOOTSTRAP_SERVERS?.split(',').map((a) => a.trim()) as string[],
           },
           consumer: {
             groupId: 'hoit-notification',

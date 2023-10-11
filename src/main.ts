@@ -33,6 +33,16 @@ async function bootstrap() {
 
   await app.listen(port);
 }
-bootstrap().catch((err) => {
-  console.error(err);
+bootstrap().catch(() => {
+  // 개발환경에서 2개이상 서버를 동시에 실행할 경우 포트 충돌이 발생합니다.
+  // 이를 방지하기 위해 8001 포트가 사용중인지 확인하고 사용중이면 8002 포트를 사용하도록 하였습니다.
+  if (process.env.NODE_ENV !== 'production') {
+    process.env.PORT = 8002 as any;
+    bootstrap().catch((err) => {
+      console.error(err);
+      process.exit(1);
+    });
+  } else {
+    process.exit(1);
+  }
 });
