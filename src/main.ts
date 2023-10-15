@@ -6,7 +6,6 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const port = process.env.PORT || 8001;
   const app = await NestFactory.create(AppModule, { logger: winstonLogger });
-
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.KAFKA,
     options: {
