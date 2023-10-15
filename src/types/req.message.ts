@@ -1,8 +1,8 @@
 import { tags } from 'typia';
 import { Gender, RequestStatus, Severity, Status } from '.';
 
-export namespace RequestMessage {
-  export interface EmsToEr {
+export namespace EmsToErRequestMessage {
+  export interface EmsToErReq {
     patient_id: string;
     emergency_center_id: string;
     request_status: RequestStatus;
@@ -63,5 +63,24 @@ export namespace RequestMessage {
       updated_at: string & tags.Format<'date-time'>;
       status: Status;
     };
+  }
+
+  export interface EmsToErRes {
+    patient_id: string;
+    emergency_center_id: string;
+    request_status: RequestStatus;
+    request_date: string & tags.Format<'date-time'>;
+    reject_reason: string | null;
+    ambulance_company_id: string;
+    ems_employee_id: string;
+  }
+
+  export interface EmsToErUpdate {
+    ambulance_company_id: string;
+    ambulance_company_name: string;
+    ems_employee_id: string;
+    patient_id: string;
+    emergency_center_id: string;
+    request_status: RequestStatus;
   }
 }

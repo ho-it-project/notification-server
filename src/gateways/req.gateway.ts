@@ -6,7 +6,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { RequestMessage } from '@src/types/req.message';
+import { EmsToErRequestMessage } from '@src/types/req.message';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from './../auth/provider/common.auth.service';
 
@@ -58,15 +58,24 @@ export class ReqGateway implements OnGatewayConnection, OnGatewayDisconnect, OnG
     // const { emergency_center_id } = client.handshake.query as unknown as ClinetQuery;
   }
 
-  notifyErChangedStatus(changedErStatus: { er_id: string; bed_count: number }) {
-    this.server.emit('er.status', changedErStatus);
-  }
-
-  notifyErChangedStatusByErId(er_id: string, bed_count: number) {
-    this.server.emit('er.status', { er_id, bed_count });
-  }
-
-  notifyEmsToErNewRequest(payload: RequestMessage.EmsToEr) {
+  notifyEmsToErNewRequestToEr(payload: EmsToErRequestMessage.EmsToErReq) {
     this.server.to(`request-er-${payload.emergency_center_id}`).emit('ems.request.er', payload);
+  }
+
+  notifyEmsToErReqResponseToEms(payload: EmsToErRequestMessage.EmsToErRes) {
+    this.server
+      .to(`request-ems-${payload.ambulance_company_id}-${payload.ems_employee_id}`)
+      .emit('ems.request.er.response', payload);
+  }
+
+  notifyEmsToErUpdateToEmsAndEr(payload: EmsToErRequestMessage.EmsToErUpdate) {
+    if (payload.request_status === 'COMPLETED')
+      // 요청이 완료되었을 때는 er에게도 보내줌
+      this.server.to(`request-er-${payload.emergency_center_id}`).emit('ems.request.er.update', payload);
+    if (payload.request_status !== 'COMPLETED')
+      // 요청이 완료정보는 ems에 보낼 필요가 없음
+      this.server
+        .to(`request-ems-${payload.ambulance_company_id}-${payload.ems_employee_id}`)
+        .emit('ems.request.er.update', payload);
   }
 }
