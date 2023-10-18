@@ -1,3 +1,4 @@
+import { EMS_REQUEST_ER, EMS_REQUEST_ER_RESPONSE, EMS_REQUEST_ER_UPDATE } from '@config/constant';
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ReqGateway } from '@src/gateways/req.gateway';
@@ -12,7 +13,7 @@ export class ReqConsumer {
    *
    * er에게만 보내줘야함
    */
-  @MessagePattern('ems.request.er')
+  @MessagePattern(EMS_REQUEST_ER)
   async handleEmsToErRequest(@Payload() payload: EmsToErRequestMessage.EmsToErReq) {
     const { updated_at } = payload;
 
@@ -33,7 +34,7 @@ export class ReqConsumer {
    *
    * ems에게만 보내줘야함
    */
-  @MessagePattern('ems.request.er.response')
+  @MessagePattern(EMS_REQUEST_ER_RESPONSE)
   async handleEmsToErResponse(@Payload() payload: EmsToErRequestMessage.EmsToErRes) {
     this.reqGateway.notifyEmsToErReqResponseToEms(payload);
   }
@@ -42,7 +43,7 @@ export class ReqConsumer {
    * 요청에 대한 업데이트가 들어왔을 때
    * ems와 er 모두에게 보내줘야함
    */
-  @MessagePattern('ems.request.er.update')
+  @MessagePattern(EMS_REQUEST_ER_UPDATE)
   async handleEmsToErUpdate(@Payload() payload: EmsToErRequestMessage.EmsToErUpdate) {
     this.reqGateway.notifyEmsToErUpdateToEmsAndEr(payload);
   }

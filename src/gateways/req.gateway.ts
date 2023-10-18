@@ -1,3 +1,4 @@
+import { EMS_REQUEST_ER, EMS_REQUEST_ER_RESPONSE, EMS_REQUEST_ER_UPDATE } from '@config/constant';
 import { Injectable, Logger } from '@nestjs/common';
 import {
   OnGatewayConnection,
@@ -59,23 +60,23 @@ export class ReqGateway implements OnGatewayConnection, OnGatewayDisconnect, OnG
   }
 
   notifyEmsToErNewRequestToEr(payload: EmsToErRequestMessage.EmsToErReq) {
-    this.server.to(`request-er-${payload.emergency_center_id}`).emit('ems.request.er', payload);
+    this.server.to(`request-er-${payload.emergency_center_id}`).emit(EMS_REQUEST_ER, payload);
   }
 
   notifyEmsToErReqResponseToEms(payload: EmsToErRequestMessage.EmsToErRes) {
     this.server
       .to(`request-ems-${payload.ambulance_company_id}-${payload.ems_employee_id}`)
-      .emit('ems.request.er.response', payload);
+      .emit(EMS_REQUEST_ER_RESPONSE, payload);
   }
 
   notifyEmsToErUpdateToEmsAndEr(payload: EmsToErRequestMessage.EmsToErUpdate) {
     if (payload.request_status === 'COMPLETED')
       // 요청이 완료되었을 때는 er에게도 보내줌
-      this.server.to(`request-er-${payload.emergency_center_id}`).emit('ems.request.er.update', payload);
+      this.server.to(`request-er-${payload.emergency_center_id}`).emit(EMS_REQUEST_ER_UPDATE, payload);
     if (payload.request_status !== 'COMPLETED')
       // 요청이 완료정보는 ems에 보낼 필요가 없음
       this.server
         .to(`request-ems-${payload.ambulance_company_id}-${payload.ems_employee_id}`)
-        .emit('ems.request.er.update', payload);
+        .emit(EMS_REQUEST_ER_UPDATE, payload);
   }
 }
