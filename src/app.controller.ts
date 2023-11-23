@@ -13,4 +13,11 @@ export class AppController {
   getHello(): string {
     return 'Hello World!';
   }
+
+  @Get('/test')
+  test() {
+    // console.log(req.headers.cookie);
+    console.log('test');
+    return 'test';
+  }
 }

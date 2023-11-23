@@ -25,8 +25,9 @@ export class ReqConsumer {
     if (diffMinutes > 5) {
       return;
     }
-    console.log(payload);
+    // console.log(payload);
     this.reqGateway.notifyEmsToErNewRequestToEr(payload);
+    this.reqGateway.notifyEmsToErNewRequestToErForEms(payload);
   }
 
   /**
@@ -36,6 +37,7 @@ export class ReqConsumer {
    */
   @MessagePattern(EMS_REQUEST_ER_RESPONSE)
   async handleEmsToErResponse(@Payload() payload: EmsToErRequestMessage.EmsToErRes) {
+    console.log(payload);
     this.reqGateway.notifyEmsToErReqResponseToEms(payload);
   }
 
