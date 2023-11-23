@@ -26,8 +26,17 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   app.enableCors({
-    origin: '*',
+    origin: [
+      'https://er.ho-it.me',
+      'https://ems.ho-it.me',
+      'http://er.development.com',
+      'http://ems.development.com',
+      'http://localhost:4000',
+      'http://localhost:3000',
+    ],
+    credentials: true,
   });
+
   await app.startAllMicroservices();
 
   await app.listen(port);

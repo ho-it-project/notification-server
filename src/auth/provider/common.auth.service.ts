@@ -13,12 +13,8 @@ export class AuthService {
     private readonly jwtOption: JwtOption,
   ) {}
 
-  cookieVerify(cookie: string): ErAuth.AccessTokenSignPayload | EmsAuth.AccessTokenSignPayload {
-    const access_token = cookie
-      .split(';')
-      .filter((v) => v.includes('access_token'))[0]
-      .split('=')[1];
-    return this.accessTokenVerify({ access_token });
+  tokenVerify(token: string): ErAuth.AccessTokenSignPayload | EmsAuth.AccessTokenSignPayload {
+    return this.accessTokenVerify({ access_token: token });
   }
   accessTokenVerify({
     access_token,
