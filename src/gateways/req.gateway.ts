@@ -64,11 +64,13 @@ export class ReqGateway implements OnGatewayConnection, OnGatewayDisconnect, OnG
   notifyEmsToErNewRequestToEr(payload: EmsToErRequestMessage.EmsToErReq) {
     this.server.to(`request-er-${payload.emergency_center_id}`).emit(EMS_REQUEST_ER, payload);
   }
+
   notifyEmsToErNewRequestToErForEms(payload: EmsToErRequestMessage.EmsToErReq) {
     const { patient } = payload;
     const { ambulance_company_id, ems_employee_id } = patient;
     this.server.to(`request-ems-${ambulance_company_id}-${ems_employee_id}`).emit(EMS_REQUEST_ER, payload);
   }
+
   notifyEmsToErReqResponseToEms(payload: EmsToErRequestMessage.EmsToErRes) {
     this.server
       .to(`request-ems-${payload.ambulance_company_id}-${payload.ems_employee_id}`)
@@ -76,10 +78,11 @@ export class ReqGateway implements OnGatewayConnection, OnGatewayDisconnect, OnG
   }
 
   notifyEmsToErUpdateToEmsAndEr(payload: EmsToErRequestMessage.EmsToErUpdate) {
-    if (payload.request_status === 'COMPLETED')
+    const { request_status } = payload;
+    if (request_status === 'TRANSFER_COMPLETED' || request_status === 'TRANSFER')
       // 요청이 완료되었을 때는 er에게도 보내줌
       this.server.to(`request-er-${payload.emergency_center_id}`).emit(EMS_REQUEST_ER_UPDATE, payload);
-    if (payload.request_status !== 'COMPLETED')
+    if (request_status !== 'TRANSFER_COMPLETED' && request_status !== 'TRANSFER')
       // 요청이 완료정보는 ems에 보낼 필요가 없음
       this.server
         .to(`request-ems-${payload.ambulance_company_id}-${payload.ems_employee_id}`)
